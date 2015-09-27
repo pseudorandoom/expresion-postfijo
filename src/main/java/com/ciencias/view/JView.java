@@ -22,8 +22,8 @@ public class JView {
     private JLabel answer;
     private JLabel posfix;
 
-    public JView(){
-        frame =  new JFrame("Calculador de expresiones aritmeticas");
+    public JView() {
+        frame = new JFrame("Calculador de expresiones aritmeticas");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         LayoutManager layout = new FlowLayout(FlowLayout.CENTER, 10, 10);
         panel = new JPanel(layout);
@@ -53,7 +53,7 @@ public class JView {
         frame.setVisible(true);
     }
 
-    private void events(){
+    private void events() {
         final Pattern pattern = Pattern.compile("^[\\^\\*/\\+()0-9\\-]+$");
         final Border initialBorder = input.getBorder();
         final Border successBorder = new LineBorder(Color.green, 1);
@@ -63,14 +63,14 @@ public class JView {
             public void keyReleased(KeyEvent e) {
                 String text = input.getText().trim();
                 Matcher matcher = pattern.matcher(text);
-                if(text.isEmpty()){
+                if (text.isEmpty()) {
                     input.setBorder(initialBorder);
                     warning.setVisible(false);
-                } else if(matcher.matches()){
+                } else if (matcher.matches()) {
                     input.setBorder(successBorder);
                     warning.setVisible(false);
                     button.setEnabled(true);
-                } else{
+                } else {
                     input.setBorder(errorBorder);
                     warning.setVisible(true);
                     button.setEnabled(false);
@@ -81,7 +81,7 @@ public class JView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String text = input.getText().trim();
-                String posfixStr =  Parser.infixToPostfix(text);
+                String posfixStr = Parser.infixToPostfix(text);
                 posfix.setText("Expresion posfix: " + Parser.numbersToLetter(posfixStr));
                 Double respuesta = Parser.executePostfix(posfixStr);
                 String answerStr = respuesta.toString();
