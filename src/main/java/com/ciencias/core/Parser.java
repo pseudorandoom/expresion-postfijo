@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Utility class to parse and execute mathematical expressions.
+ */
 public final class Parser {
     private static final Map<Character, Integer> precedence;
     private static final Pattern number = Pattern.compile("(\\d+)");
