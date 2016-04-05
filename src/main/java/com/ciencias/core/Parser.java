@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
  * Utility class to parse and execute mathematical expressions.
  */
 public final class Parser {
-    private static final Map<Character, Integer> precedence;
-    private static final Pattern number = Pattern.compile("(\\d+)");
+    private static final Map<Character, Integer> PRECEDENCE;
+    private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+)");
 
     static {
         Map<Character, Integer> tempMap = new HashMap<Character, Integer>(5);
@@ -20,21 +20,21 @@ public final class Parser {
         tempMap.put('*', 2);
         tempMap.put('+', 1);
         tempMap.put('-', 1);
-        precedence = Collections.unmodifiableMap(tempMap);
+        PRECEDENCE = Collections.unmodifiableMap(tempMap);
     }
 
     private Parser(){}
 
     /**
-     * Given two mathematical math operands determines if the first one has precedence over the second one.
+     * Given two mathematical math operands determines if the first one has PRECEDENCE over the second one.
      *
      * @param a
      * @param b
      * @return
      */
     public static boolean hasPrecedence(char a, char b) {
-        int anum = precedence.get(a);
-        int bnum = precedence.get(b);
+        int anum = PRECEDENCE.get(a);
+        int bnum = PRECEDENCE.get(b);
         return anum - bnum > 0;
     }
 
@@ -49,7 +49,7 @@ public final class Parser {
         String[] tokens = postfix.split("\\s+");
         Deque<Double> stack = new ArrayDeque<Double>();
         for (String token : tokens) {
-            Matcher matcher = number.matcher(token);
+            Matcher matcher = NUMBER_PATTERN.matcher(token);
             if (matcher.matches()) {
                 stack.push(Double.parseDouble(token));
             } else if (!token.equals("")) {
@@ -128,7 +128,7 @@ public final class Parser {
      */
     public static String numbersToLetter(String postfix) {
         CharacterIterator ci = new StringCharacterIterator("abcdefghijklmnopqrstuvwxyz");
-        Matcher matcher = number.matcher(postfix);
+        Matcher matcher = NUMBER_PATTERN.matcher(postfix);
         while (matcher.find()) {
             String number = matcher.group();
             postfix = postfix.replaceFirst(number, Character.toString(ci.current()));
