@@ -6,8 +6,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Parser {
+public final class Parser {
     private static final Map<Character, Integer> precedence;
+    private static final Pattern number = Pattern.compile("(\\d+)");
 
     static {
         Map<Character, Integer> tempMap = new HashMap<Character, Integer>(5);
@@ -19,18 +20,31 @@ public class Parser {
         precedence = Collections.unmodifiableMap(tempMap);
     }
 
-    private static Pattern number = Pattern.compile("(\\d+)");
+    private Parser(){}
 
+    /**
+     * Given two mathematical math operands determines if the first one has precedence over the second one.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
     public static boolean hasPrecedence(char a, char b) {
         int anum = precedence.get(a);
         int bnum = precedence.get(b);
         return anum - bnum > 0;
     }
 
+    /**
+     * Given a postfix mathematical expression evaluates to a double or throws IllegalArgumentException if any
+     * character is not a valid math operand.
+     *
+     * @param postfix
+     * @return
+     */
     public static Double executePostfix(String postfix) {
         String[] tokens = postfix.split("\\s+");
-        System.out.println("postfix: " + postfix);
-        Deque<Double> stack = new LinkedList<Double>();
+        Deque<Double> stack = new ArrayDeque<Double>();
         for (String token : tokens) {
             Matcher matcher = number.matcher(token);
             if (matcher.matches()) {
@@ -54,7 +68,7 @@ public class Parser {
                         result = Math.pow(stack.pop(), result);
                         break;
                     default:
-                        throw new IllegalArgumentException(token + " no es un operador matematico valido");
+                        throw new IllegalArgumentException(token + " not a valid math operand.");
                 }
                 stack.push(result);
             }
@@ -62,9 +76,15 @@ public class Parser {
         return stack.pop();
     }
 
+    /**
+     * Converts an infix mathematical expression to postfix format.
+     *
+     * @param infix
+     * @return
+     */
     public static String infixToPostfix(String infix) {
-        StringBuffer sb = new StringBuffer();
-        Deque<Character> operators = new LinkedList<Character>();
+        StringBuilder sb = new StringBuilder();
+        Deque<Character> operators = new ArrayDeque<Character>();
         for (char c : infix.toCharArray()) {
             if (Character.isDigit(c)) {
                 sb.append(c);
@@ -97,6 +117,12 @@ public class Parser {
         return sb.toString();
     }
 
+    /**
+     * Replaces the numbers in the postfix expression with letters to be shown to the user.
+     *
+     * @param postfix
+     * @return
+     */
     public static String numbersToLetter(String postfix) {
         CharacterIterator ci = new StringCharacterIterator("abcdefghijklmnopqrstuvwxyz");
         Matcher matcher = number.matcher(postfix);
